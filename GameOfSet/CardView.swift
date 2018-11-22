@@ -73,27 +73,36 @@ import UIKit
         
     }
     
+    /// creating a path for waves in self.bounds
     private func pathForWaves() -> UIBezierPath{
+    
         let height = dimentions.waveHeightToHeight * bounds.height
         let gap = dimentions.waveGapToHeight * bounds.height
         let marginFromSide = bounds.width * dimentions.waveStartingPointOffset
         let marginFromTop = (bounds.height - CGFloat(number) * height - CGFloat(number-1)*gap)/2
         
+        //coordinates from grpahic software
         let coordinatesForCurve: [(CGFloat,CGFloat)] = [(414,242),(473.545532,207.060059),(480.098299,428.778325),(299.598299,388.278325),(208.098299,350.278325),(194.5,388.278325), (145,410),(83.5,418),(87.4017013,182.721675),(269,261),(332.61929,288.423228),(353.5,277.5),(414,242)]
-        
+        // make coordinates proportoinal for current bounds
         let scaledCoordinates = coordinatesForCurve.map{return  CGPoint(point: ($0.0 * bounds.width/560, $0.1 * bounds.height/870))}
         
+        // defining changing in coordinates from first point
+        let scaledToFirstPoint = scaledCoordinates.map{return $0 - scaledCoordinates.first!}
+        print(scaledToFirstPoint)
+        let step1 = Array<CGPoint>(scaledToFirstPoint[1...3])
+        let step2 = Array<CGPoint>(scaledToFirstPoint[4...6])
+        let step3 = Array<CGPoint>(scaledToFirstPoint[7...9])
+        let step4 = Array<CGPoint>(scaledToFirstPoint[10...12])
+        let steps = [step1,step2,step3,step4]
+    
         let path = UIBezierPath()
         var startingPoint = CGPoint(x: marginFromSide, y: marginFromTop)
         
         for _ in 1...number{
             path.move(to:startingPoint)
-            let offSet = startingPoint - scaledCoordinates.first!
-            let offsetCoordinates = scaledCoordinates.map{$0 + offSet}
-            for index in stride(from: 1, to: coordinatesForCurve.count-2, by:2){
-                path.addCurve(to: offsetCoordinates[index+2], controlPoint1: offsetCoordinates[index], controlPoint2: offsetCoordinates[index+1])
+            for step in steps{
+                path.addCurve(to: startingPoint + step[2],controlPoint1: startingPoint +  step[0], controlPoint2:  startingPoint + step[1])
             }
-            
             startingPoint = startingPoint + (0,height+gap)
         }
         return path
@@ -127,7 +136,7 @@ import UIKit
                 path.lineWidth = 3.0
                 path.stroke()
                 path.addClip()
-                pathForStripes().lineWidth = 0.5
+                pathForStripes().lineWidth = 0.25
                 pathForStripes().stroke()
         case .full: path.fill()
         }
@@ -146,6 +155,7 @@ enum CardFill{
     case stripped
     case full
 }
+
 struct dimentions{
     static let cornerRadius: CGFloat = 5/87
     //Oval
@@ -159,10 +169,11 @@ struct dimentions{
     static let triangleGap: CGFloat = 9/87
     //Wave
     static let waveStartingPointOffset: CGFloat = 41/56
-    static let waveHeightToHeight: CGFloat = 18/56
-    static let waveGapToHeight: CGFloat = 43/560
+    static let waveHeightToHeight: CGFloat = 17/87
+    static let waveGapToHeight: CGFloat = 43/870
     //Stripes
     static let stripingStepToWidth: CGFloat = 1/56
+    //Line
 }
 
 extension CGPoint{
@@ -177,6 +188,7 @@ extension CGPoint{
     }
     
     init(point: (CGFloat,CGFloat)){
+        self.init()
         self.x = point.0
         self.y = point.1
     }
