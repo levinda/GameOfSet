@@ -11,15 +11,20 @@ import UIKit
 
 @IBDesignable class CardView: UIView {
     
-    
     @IBInspectable var number: Int = 1
     @IBInspectable var color: UIColor = .purple
+    var roundedRectColor = UIColor.white
     var shape: CardShape = .wave
     var fill: CardFill = .stripped
     
+    var isSelected = false
     
-    
-    
+    //Computing stripping step 
+    private func stripesStepSizeforWirdth() -> CGFloat{
+        let coefficieant = cbrt(560 / bounds.width)
+        return bounds.width * dimentions.stripingStepToWidth * coefficieant
+    }
+
     private func pathForOvals(for number: Int) -> UIBezierPath {
         
         let ovalHeight = dimentions.ovalHeight * bounds.height
@@ -73,6 +78,9 @@ import UIKit
         
     }
     
+    
+    // MARK: Making paths for all figures
+    
     /// creating a path for waves in self.bounds
     private func pathForWaves() -> UIBezierPath{
     
@@ -110,7 +118,7 @@ import UIKit
     
     private func pathForStripes() -> UIBezierPath{
         let path = UIBezierPath()
-        for x in stride(from: 0, to: bounds.maxX, by: bounds.width * dimentions.stripingStepToWidth){
+        for x in stride(from: 0, to: bounds.maxX, by: stripesStepSizeforWirdth()){
             path.move(to: CGPoint(x: x,y:0))
             path.addLine(to: CGPoint(x: x,y:bounds.maxY) )
         }
@@ -120,9 +128,10 @@ import UIKit
     override func draw(_ rect: CGRect) {
         
         let pathForCardBounds = UIBezierPath(roundedRect: bounds, cornerRadius: dimentions.cornerRadius * bounds.height)
-        UIColor.white.setFill()
+        roundedRectColor.setFill()
         pathForCardBounds.fill()
         
+        let mainLineWidth = bounds.height * dimentions.lineWidth
         color.set()
         var path = UIBezierPath()
         switch shape{
@@ -130,13 +139,13 @@ import UIKit
         case .triangle: path = pathForTriangales()
         case .wave: path = pathForWaves()
         }
+        path.lineWidth = mainLineWidth
         switch fill {
         case .none: path.stroke()
             case .stripped:
-                path.lineWidth = 3.0
                 path.stroke()
                 path.addClip()
-                pathForStripes().lineWidth = 0.25
+                pathForStripes().lineWidth = 0.5
                 pathForStripes().stroke()
         case .full: path.fill()
         }
@@ -174,6 +183,7 @@ struct dimentions{
     //Stripes
     static let stripingStepToWidth: CGFloat = 1/56
     //Line
+    static let lineWidth:CGFloat = 1/87
 }
 
 extension CGPoint{

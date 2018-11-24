@@ -8,35 +8,43 @@
 
 import UIKit
 
-class ViewController: UIViewController {
+class ViewController: UIViewController, UIGestureRecognizerDelegate {
+    
+    
+    //MARK: GesturesRecognizers
     
     
     
     //MARK: Properties
     
-    private var shapes = [Shape.triangle: "▲",Shape.circle:"●",Shape.square: "■"]
-    private var colors = [Color.first: UIColor.green, .second: .red, .third: .purple]
-    private var fill = [Fill.none: 10,Fill.striped: -10, Fill.full:0]
+    private var shapes = [Shape.triangle: CardShape.triangle,Shape.circle: CardShape.oval,Shape.square: CardShape.wave]
+    private var colors = [Color.first: #colorLiteral(red: 0, green: 0.726098001, blue: 0, alpha: 1), .second: #colorLiteral(red: 1, green: 0, blue: 0, alpha: 1), .third: #colorLiteral(red: 0.4170517325, green: 0, blue: 0.5548704267, alpha: 1)]
+    private var fill = [Fill.none: CardFill.none ,Fill.striped: CardFill.stripped, Fill.full: CardFill.full]
     
-    private var game = SetGame()
-    
-    private var grid = Grid(layout: Grid.Layout.aspectRatio(0.5))
-    
-    @IBOutlet var buttons: [UIButton]!{
+    private var game = SetGame(){
         didSet{
-            for button in buttons{
-                button.layer.borderWidth = 1
-                button.layer.cornerRadius = 8
+            updateViewFromModel()
+        }
+    }
+    
+    @IBOutlet weak var cardDrawingView: UIView!
+    
+    
+    private var cardViews = [CardView](){
+        didSet{
+            grid.cellCount = cardViews.count
+            for cardIndex in cardViews.indices{
+                let frame = grid[cardIndex]!
+                cardViews[cardIndex].frame = frame.insetBy(dx: frame.width * 1/20, dy: frame.height * 1/20) ?? CGRect.zero
             }
         }
     }
     
+    private var selectedCardViews = [CardView]()
     
+    lazy private var grid = Grid(layout: Grid.Layout.aspectRatio(56/87), frame: cardDrawingView.frame)
     
-    @IBOutlet weak var gameScoreLabel: UILabel!
-    
-    @IBOutlet weak var cardCountButton: UIButton!
-    
+    @IBOutlet weak var testCardView: CardView!
     
     private(set) var selectedButton = [UIButton](){
         didSet{
@@ -53,113 +61,86 @@ class ViewController: UIViewController {
                 for button in selectedButton{
                     selectedCards.append(game.cardsOnTable[button.tag])
                 }
-                makeSelectedCardsSetOrNot(state: game.checkSelectedCardsForSet(for: selectedCards))
             }
         }
     }
     
-    var areCardsAMatch: Bool = false
-    
-    var gameScore: Int {
-        set{
-            gameScoreLabel.text = "Score: \(newValue)"
-        }
-        get{
-            return game.score
-        }
-    }
-    
+   
     
     //MARK: Functions
     
-    private func updateTableFromModel(){
-        gameScore = game.score
-        for button in buttons{
-            makeButtonRepresentTheModel(button)
-        }
-        cardCountButton.setTitle("Cards left: \(game.cards.count + game.cardsOnTable.count)", for: .normal)
-        
+    private func  makeCardAndRepresentingViewEqual(cardView: CardView, card: Card){
+        cardView.color = colors[card.color]!
+        cardView.fill = fill[card.fill]!
+        cardView.number = card.number
+        cardView.shape = shapes[card.shape]!
     }
     
     
-    private func makeButtonRepresentTheModel(_ button: UIButton){
-        
-        button.isHidden = false
-        
-        if button.tag < game.cardsOnTable.count{
-            let representedCard = game.cardsOnTable[button.tag]
-            
-            var title = ""
-            for _ in 1...representedCard.number{
-                title += shapes[representedCard.shape]!
+    private func updateViewFromModel(){
+        for cardIndex in game.cardsOnTable.indices{
+            if cardIndex + 1 < cardViews.count{
+                 makeCardAndRepresentingViewEqual(cardView: cardViews[cardIndex], card: game.cards[cardIndex])
+            }else{
+                let newCard = CardView()
+                 let cardSelectGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(ViewController.selectCard(recognizer:)))
+                newCard.isOpaque = false
+                makeCardAndRepresentingViewEqual(cardView: newCard, card: game.cardsOnTable[cardIndex])
+                newCard.addGestureRecognizer(cardSelectGestureRecognizer)
+                cardSelectGestureRecognizer.delegate = self
+                view.addSubview(newCard)
+                cardViews.append(newCard)
+                
             }
-            
-            let attributes: [NSAttributedString.Key : Any] = [
-                NSAttributedString.Key.strokeColor : colors[representedCard.color]!,
-                NSAttributedString.Key.strokeWidth : fill[representedCard.fill]!,
-                ]
-            
-            let attributedTitle = NSAttributedString(string: title, attributes: attributes)
-            button.tintColor = colors[representedCard.color]
-            button.setAttributedTitle(attributedTitle, for: .normal)
-            if representedCard.fill == .striped{
-                button.setTitle(title, for: .normal)
-                button.tintColor = colors[representedCard.color]!.withAlphaComponent(0.3)
-            }
-            
-        }else{
-            button.isHidden = true
         }
     }
     
-    private func makeSelectedCardsSetOrNot(state: Bool){
-        for button in selectedButton{
-            button.layer.borderColor = state ? #colorLiteral(red: 0.3411764801, green: 0.6235294342, blue: 0.1686274558, alpha: 1) : #colorLiteral(red: 0.7450980544, green: 0.1568627506, blue: 0.07450980693, alpha: 1)
+    override func viewDidLoad() {
+        updateViewFromModel()
+    }
+    
+    
+    //MARK: Selectors
+    
+    @objc func selectCard(recognizer : UITapGestureRecognizer){
+        switch recognizer.state{
+        case .ended:
+            if let sender = recognizer.view as? CardView{
+                    
+                    UIViewPropertyAnimator.runningPropertyAnimator(withDuration: 0.1,
+                                                                   delay: 0,
+                                                                   options: [UIView.AnimationOptions.allowUserInteraction,.curveEaseInOut,.beginFromCurrentState] ,
+                                                                   animations: {sender.centerScaleBy(factor: sender.isSelected ? 1/0.8 : 0.8 ) })
+                    sender.isSelected = sender.isSelected ? false : true
+                }
+
+        default: break
         }
-        areCardsAMatch = state
-        gameScoreLabel.text = "Score: \(game.score)"
     }
     
     //MARK: Actions
     
-    @IBAction func touchCard(_ sender: UIButton) {
-        
-        if selectedButton.count != 3{
-            if let indexOfSelectedCard = selectedButton.index(of: sender){
-                selectedButton.remove(at: indexOfSelectedCard)
-            }else{
-                selectedButton.append(sender)
-            }
-        }else{
-            if (areCardsAMatch == true)&&(selectedButton.contains(sender)){
-                updateTableFromModel()
-                selectedButton = []
-            }else if areCardsAMatch != true{
-                selectedButton = [sender]
-            }
-        }
-        
-    }
-    
-    @IBAction func deal3MoreCards(_ sender: UIButton) {
-        print(game.IsThereASetOnTable())
-        var openedCardCounter = 0
-        for card in buttons{
-            if !card.isHidden{
-                openedCardCounter += 1
-            }
-        }
-        if openedCardCounter != 24{
-            game.deal3MoreCards()
-            updateTableFromModel()
-        }
-    }
-    
-    @IBAction func startNewGame(_ sender: UIButton) {
-        selectedButton = []
-        game = SetGame()
-        updateTableFromModel()
-        gameScore = game.score
-    }
     
 }
+
+
+extension CGRect{
+    func scaledBy(factor : CGFloat) -> CGRect{
+        let rect = CGRect(origin: self.origin, size: CGSize(width: self.width * factor, height: self.height * factor))
+        return rect
+    }
+}
+
+extension UIView{
+    func centerScaleBy(factor: CGFloat){
+        let centerPoint = self.center
+        self.frame = self.frame.scaledBy(factor: factor)
+        self.center = centerPoint
+        
+    }
+    
+    func scaleBy(factor:CGFloat){
+        self.frame = self.frame.scaledBy(factor: factor)
+    }
+}
+

@@ -1,6 +1,5 @@
-//
+//  Данный утилитарный объект мной не написан нашел в интернете
 //  Grid.swift
-//
 //
 //  Arranges the space in a rectangle into a grid of cells.
 //  All cells will be exactly the same size.

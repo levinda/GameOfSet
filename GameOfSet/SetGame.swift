@@ -31,8 +31,9 @@ class SetGame {
                 }
             }
         }
+        //Draft 12 cards
         cards.radomize()
-        for _ in 1...6{
+        for _ in 1...12{
             cardsOnTable.append(cards.removeLast())
         }
     }
