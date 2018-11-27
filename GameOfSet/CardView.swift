@@ -9,13 +9,15 @@
 import UIKit
 
 
-@IBDesignable class CardView: UIView {
+@IBDesignable class CardView: UIView{
     
     @IBInspectable var number: Int = 1
     @IBInspectable var color: UIColor = .purple
     var roundedRectColor = UIColor.white
     var shape: CardShape = .wave
     var fill: CardFill = .stripped
+    
+    var index = 0;
     
     var isSelected = false
     
@@ -96,7 +98,6 @@ import UIKit
         
         // defining changing in coordinates from first point
         let scaledToFirstPoint = scaledCoordinates.map{return $0 - scaledCoordinates.first!}
-        print(scaledToFirstPoint)
         let step1 = Array<CGPoint>(scaledToFirstPoint[1...3])
         let step2 = Array<CGPoint>(scaledToFirstPoint[4...6])
         let step3 = Array<CGPoint>(scaledToFirstPoint[7...9])

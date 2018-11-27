@@ -13,7 +13,8 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
     
     //MARK: GesturesRecognizers
     
-    
+    var selectingFeedbackGenerator = UIImpactFeedbackGenerator()
+    @IBOutlet weak var cardDrawingView: UIView!
     
     //MARK: Properties
     
@@ -27,20 +28,27 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
         }
     }
     
-    @IBOutlet weak var cardDrawingView: UIView!
     
+    private var newCardViews = [CardView]()
     
-    private var cardViews = [CardView](){
+     private var cardViews = [CardView](){
         didSet{
             grid.cellCount = cardViews.count
+            
             for cardIndex in cardViews.indices{
-                let frame = grid[cardIndex]!
-                cardViews[cardIndex].frame = frame.insetBy(dx: frame.width * 1/20, dy: frame.height * 1/20) ?? CGRect.zero
+                let currentCardView = cardViews[cardIndex]
+                let initialFrame = grid[cardIndex]!
+                let frame = initialFrame.insetBy(dx: initialFrame.width * 1/20, dy: initialFrame.height * 1/20)
+                
+                if newCardViews.contains(currentCardView){
+                    UIView.animateKeyframes(withDuration: 0.5  , delay: 0.1 + Double(newCardViews.firstIndex(of: currentCardView)!)/10 , animations: {  currentCardView.frame = frame})
+                }else{
+                    UIView.animate(withDuration: 0.5, animations: {currentCardView.frame = frame})
+                }
             }
+            newCardViews = []
         }
     }
-    
-    private var selectedCardViews = [CardView]()
     
     lazy private var grid = Grid(layout: Grid.Layout.aspectRatio(56/87), frame: cardDrawingView.frame)
     
@@ -69,6 +77,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
     
     //MARK: Functions
     
+    /// Card representing view properties according to card model properties
     private func  makeCardAndRepresentingViewEqual(cardView: CardView, card: Card){
         cardView.color = colors[card.color]!
         cardView.fill = fill[card.fill]!
@@ -79,26 +88,25 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
     
     private func updateViewFromModel(){
         for cardIndex in game.cardsOnTable.indices{
-            if cardIndex + 1 < cardViews.count{
-                 makeCardAndRepresentingViewEqual(cardView: cardViews[cardIndex], card: game.cards[cardIndex])
+            grid.cellCount = game.cardsOnTable.count
+            if cardIndex + 1 <= cardViews.count{
+                 makeCardAndRepresentingViewEqual(cardView: cardViews[cardIndex], card: game.cardsOnTable[cardIndex])
             }else{
                 let newCard = CardView()
-                 let cardSelectGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(ViewController.selectCard(recognizer:)))
-                newCard.isOpaque = false
-                makeCardAndRepresentingViewEqual(cardView: newCard, card: game.cardsOnTable[cardIndex])
+                let cardSelectGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(ViewController.selectCard(recognizer:)))
                 newCard.addGestureRecognizer(cardSelectGestureRecognizer)
-                cardSelectGestureRecognizer.delegate = self
-                view.addSubview(newCard)
-                cardViews.append(newCard)
+                     cardSelectGestureRecognizer.delegate = self
+                newCard.isOpaque = false
                 
+                newCard.index = cardIndex
+                makeCardAndRepresentingViewEqual(cardView: newCard, card: game.cardsOnTable[cardIndex])
+                self.view.addSubview(newCard)
+                newCardViews.append(newCard)
             }
         }
+        cardViews += newCardViews
     }
-    
-    override func viewDidLoad() {
-        updateViewFromModel()
-    }
-    
+
     
     //MARK: Selectors
     
@@ -106,22 +114,52 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
         switch recognizer.state{
         case .ended:
             if let sender = recognizer.view as? CardView{
-                    
-                    UIViewPropertyAnimator.runningPropertyAnimator(withDuration: 0.1,
-                                                                   delay: 0,
-                                                                   options: [UIView.AnimationOptions.allowUserInteraction,.curveEaseInOut,.beginFromCurrentState] ,
-                                                                   animations: {sender.centerScaleBy(factor: sender.isSelected ? 1/0.8 : 0.8 ) })
+                    selectingFeedbackGenerator.prepare()
+                    selectingFeedbackGenerator.impactOccurred()
+                    animateCardSelection(for: sender)
                     sender.isSelected = sender.isSelected ? false : true
-                }
-
+        
+            }
         default: break
         }
     }
     
-    //MARK: Actions
+    @objc func deal3MoreCards(recognizer: UISwipeGestureRecognizer){
+        switch recognizer.state{
+        case .ended:
+            
+            game.deal3MoreCards()
+            updateViewFromModel()
+        default: break
+        }
+    }
+    
+    //MARK: Animations
+    
+    func animateCardSelection(for cardView: CardView){
+        UIViewPropertyAnimator.runningPropertyAnimator(withDuration: 0.1,
+                                                       delay: 0,
+                                                       options: [UIView.AnimationOptions.allowUserInteraction,.curveEaseInOut,.beginFromCurrentState] ,
+                                                       animations: {cardView.centerScaleBy(factor: cardView.isSelected ? 1/0.8 : 0.8 )
+                                                        cardView.alpha = cardView.isSelected ? 1 : 0.8
+                                                        
+        })
+    }
+    
+    
+    override func viewDidLoad() {
+        updateViewFromModel()
+        selectingFeedbackGenerator.prepare()
+        
+        let downSwipeGestureRecognizer = UISwipeGestureRecognizer(target: self, action: #selector(ViewController.deal3MoreCards(recognizer:)))
+        downSwipeGestureRecognizer.direction = .down
+        self.view.addGestureRecognizer(downSwipeGestureRecognizer)
+        downSwipeGestureRecognizer.delegate = self
+    }
     
     
 }
+
 
 
 extension CGRect{
