@@ -81,6 +81,14 @@ class SetGame {
         }
     }
     
+    func removeCardsFromGameByCardIndexes(_ indexes:[Int]){
+        for index in indexes{
+            cardsOnTable.remove(at: index)
+            if cards.count > 0{
+            }
+        }
+    }
+    
     func checkAllCards(for cards: [Card]) -> Bool{
         
         var shapes = [Shape]()

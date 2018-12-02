@@ -62,7 +62,6 @@
 		8337C37520CB7C720053DCC8 /* GameOfSet */ = {
 			isa = PBXGroup;
 			children = (
-				8337C38820CB7CA20053DCC8 /* Supporting */,
 				83231E4A20FE11F6002BAF51 /* ViewController.swift */,
 				83231E4620FE11CD002BAF51 /* SetGame.swift */,
 				83231E4820FE11D3002BAF51 /* Card.swift */,
@@ -70,6 +69,7 @@
 				8337C37A20CB7C720053DCC8 /* Main.storyboard */,
 				8337C38220CB7C7B0053DCC8 /* Info.plist */,
 				83231E4C20FE12F4002BAF51 /* Grid.swift */,
+				8337C38820CB7CA20053DCC8 /* Supporting */,
 			);
 			path = GameOfSet;
 			sourceTree = "<group>";

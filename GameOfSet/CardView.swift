@@ -80,8 +80,7 @@ import UIKit
         
     }
     
-    
-    // MARK: Making paths for all figures
+
     
     /// creating a path for waves in self.bounds
     private func pathForWaves() -> UIBezierPath{

@@ -9,7 +9,7 @@
 import Foundation
 
 
-struct Card: Equatable{
+struct Card: Equatable, Hashable{
     
     
     static func ==(lhs: Card, rhs: Card) -> Bool {
