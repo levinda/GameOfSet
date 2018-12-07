@@ -32,20 +32,23 @@ class SetGame {
             }
         }
         //Draft 12 cards
-        cards.radomize()
+        cards.randomize()
         for _ in 1...12{
             cardsOnTable.append(cards.removeLast())
         }
     }
 
-    func checkSelectedCardsForSet(for cards: [Card]) -> Bool{
+    func checkSelectedCardsForSet(by indexes: [Int]) -> Bool{
+        
+        let indexes = indexes.sorted().reversed()
         
         var shapes = [Shape]()
         var colors = [Color]()
         var numbers = [Int]()
         var fills = [Fill]()
         
-        for card in cards{
+        for cardIndex in indexes{
+            let card = cardsOnTable[cardIndex]
             if !shapes.contains(card.shape){
                 shapes.append(card.shape)
             }
@@ -61,12 +64,10 @@ class SetGame {
         }
         if (shapes.count != 2)&&(colors.count != 2)&&(numbers.count != 2)&&(fills.count != 2){
             
-            for card in cards{
-                if let indexOfSelectedCard = cardsOnTable.index(of: card){
-                    cardsOnTable.remove(at: indexOfSelectedCard)
-                    if self.cards.count > 0 {
-                        cardsOnTable.insert(self.cards.removeLast(), at: indexOfSelectedCard)
-                    }
+            for cardIndex in indexes{
+                    cardsOnTable.remove(at: cardIndex)
+                    if self.cards.count > 0, self.cardsOnTable.count < 12{
+                        cardsOnTable.insert(self.cards.removeLast(), at: cardIndex)
                 }
             }
             score += 3
@@ -86,6 +87,7 @@ class SetGame {
             cardsOnTable.remove(at: index)
             if cards.count > 0{
             }
+            cardsOnTable.insert(cards.randomElement()!,at: index)
         }
     }
     
@@ -118,15 +120,27 @@ class SetGame {
     }
 
     func deal3MoreCards(){
-        if (cards.count >= 3)&&(!areCardsSet){
+        if (cards.count >= 3){
             for _ in 1...3{
                 cardsOnTable.append(cards.removeLast())
             }
+        }        
+    }
+    func reshuffleCards(){
+        cards = cards + cardsOnTable
+        cardsOnTable = []
+        cards.randomize()
+        if cards.count > 12{
+            for _ in 0...11{
+                cardsOnTable.append(cards.removeLast())
+            }
+        }else{
+            cardsOnTable = cards
+            cards = []
         }
-        areCardsSet = false
     }
     
-    func IsThereASetOnTable() -> Bool{
+    func IsThereASetOnTable() -> [Card]?{
         for firstCard in cardsOnTable{
             var secondCards = cardsOnTable
             secondCards.remove(at: secondCards.index(of: firstCard)!)
@@ -135,19 +149,19 @@ class SetGame {
                 thirdCards.remove(at: thirdCards.index(of: secondCard)!)
                 for thirdCard in thirdCards{
                     if checkAllCards(for: [firstCard,secondCard,thirdCard]){
-                        return true
+                        return [firstCard,secondCard,thirdCard]
                     }
                 }
             }
         }
-        return false
+        return nil
     }
     
 }
 
 
 extension Array{
-    mutating func radomize(){
+    mutating func randomize(){
         for x in self.indices{
             self.insert(self.remove(at: x), at: self.count.arc4random)
         }
