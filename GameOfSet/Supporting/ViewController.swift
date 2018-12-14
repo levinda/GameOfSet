@@ -79,12 +79,15 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
     
     
     private func examineSelection(){
-        let selectedCardIndexes = selectedCards.map{$0.index}
+        var selectedCardIndexes = selectedCards.map{$0.index}
+        selectedCardIndexes.sort()
         if game.checkSelectedCardsForSet(by:selectedCardIndexes){
             for cardView in selectedCards{
                 cardViews.remove(at: cardViews.firstIndex(of: cardView)!)
+                cardViewsToCards[game.cardsOnTable[cardView.index]] = nil
                 animateCardViewDissapearance(cardView)
-            }
+                game.removeAndDrawCardsOnTable(for: selectedCardIndexes)
+        }
             self.setOnTable = nil
         }else{
             for cardView in selectedCards{
@@ -176,6 +179,8 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
             }else{
                 animateThereIsASetOnTable(for: cardViews)
             }
+//            game.deal3MoreCards()
+//            updateViewFromModel()
         default: break
         }
     }
@@ -242,6 +247,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
     
     func animateCardViewDissapearance(_ cardView: CardView){
         UIView.animate(withDuration: 0.4, animations: {cardView.frame = cardView.frame.centerScaledBy(factor: 0.0001)}, completion: {state in cardView.removeFromSuperview()})
+        
     }
     
     
