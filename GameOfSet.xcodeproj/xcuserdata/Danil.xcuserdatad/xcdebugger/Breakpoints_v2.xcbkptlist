@@ -10,11 +10,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "GameOfSet/Supporting/ViewController.swift"
-            timestampString = "566774992.200839"
+            timestampString = "566776055.53679"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "67"
-            endingLineNumber = "67"
+            startingLineNumber = "70"
+            endingLineNumber = "70"
             landmarkName = "selectedCards"
             landmarkType = "24">
          </BreakpointContent>
@@ -26,11 +26,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "GameOfSet/Supporting/ViewController.swift"
-            timestampString = "566774992.200991"
+            timestampString = "566776055.53722"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "172"
-            endingLineNumber = "172"
+            startingLineNumber = "186"
+            endingLineNumber = "186"
             landmarkName = "ViewController"
             landmarkType = "3">
          </BreakpointContent>
@@ -58,13 +58,76 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "GameOfSet/Supporting/ViewController.swift"
-            timestampString = "566774992.201085"
+            timestampString = "566776055.537528"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "85"
-            endingLineNumber = "85"
+            startingLineNumber = "98"
+            endingLineNumber = "98"
             landmarkName = "examineSelection()"
             landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "GameOfSet/Supporting/ViewController.swift"
+            timestampString = "566776055.537817"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "271"
+            endingLineNumber = "271"
+            landmarkName = "animateCardViewReshuffling(_:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "GameOfSet.ViewController.animateCardViewReshuffling(GameOfSet.CardView) -&gt; ()"
+                  moduleName = "GameOfSet"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/Danil/Developer/GameOfSet/GameOfSet/Supporting/ViewController.swift"
+                  timestampString = "566776055.6296999"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "271"
+                  endingLineNumber = "271"
+                  offsetFromSymbolStart = "340">
+               </Location>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 () -&gt; () in GameOfSet.ViewController.animateCardViewReshuffling(GameOfSet.CardView) -&gt; ()"
+                  moduleName = "GameOfSet"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/Danil/Developer/GameOfSet/GameOfSet/Supporting/ViewController.swift"
+                  timestampString = "566776055.632503"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "271"
+                  endingLineNumber = "271"
+                  offsetFromSymbolStart = "44">
+               </Location>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #2 (Swift.Bool) -&gt; () in GameOfSet.ViewController.animateCardViewReshuffling(GameOfSet.CardView) -&gt; ()"
+                  moduleName = "GameOfSet"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/Danil/Developer/GameOfSet/GameOfSet/Supporting/ViewController.swift"
+                  timestampString = "566776055.633998"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "271"
+                  endingLineNumber = "271"
+                  offsetFromSymbolStart = "40">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

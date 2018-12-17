@@ -37,6 +37,9 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
     @IBOutlet weak var cardDrawingView: UIView!
     
     
+    @IBOutlet weak var scoreLabel: UILabel!
+    
+    
     private var newCardViews = [CardView]()
     
     private var cardViewsToCards = [Card:CardView]()
@@ -71,6 +74,16 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
                     self.examineSelection()
                 }
             }
+        }
+    }
+    
+    private var score: Int{
+        get{
+            return game.score
+        }
+        set{
+            scoreLabel.text = "Score: \(newValue)"
+        
         }
     }
     
@@ -118,6 +131,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
     
     
     private func updateViewFromModel(){
+        score = game.score
         grid.cellCount = game.cardsOnTable.count
         var numberOfNewCards = 0
         for cardIndex in game.cardsOnTable.indices{

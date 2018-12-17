@@ -19,13 +19,21 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <containerView hidden="YES" opaque="NO" contentMode="redraw" translatesAutoresizingMaskIntoConstraints="NO" id="ODy-2D-hGZ">
-                                <rect key="frame" x="16" y="36" width="343" height="611"/>
+                                <rect key="frame" x="16" y="36" width="343" height="574"/>
                             </containerView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Score: 0" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="PYJ-JS-0gB">
+                                <rect key="frame" x="144.5" y="618" width="86.5" height="29"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="24"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" red="1" green="0.46808738370000003" blue="0.40189291939999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="ODy-2D-hGZ" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="16" id="7Oh-No-vyu"/>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="ODy-2D-hGZ" secondAttribute="bottom" constant="20" id="VeS-1h-9E9"/>
+                            <constraint firstItem="PYJ-JS-0gB" firstAttribute="top" secondItem="ODy-2D-hGZ" secondAttribute="bottom" constant="8" id="9d7-mG-DIb"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="PYJ-JS-0gB" secondAttribute="bottom" constant="20" id="QE4-z7-Kgv"/>
+                            <constraint firstItem="PYJ-JS-0gB" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="pDh-C4-gSw"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="ODy-2D-hGZ" secondAttribute="trailing" constant="16" id="q2O-Ui-xbj"/>
                             <constraint firstItem="ODy-2D-hGZ" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="16" id="u7w-kz-dYK"/>
                         </constraints>
@@ -33,6 +41,7 @@
                     </view>
                     <connections>
                         <outlet property="cardDrawingView" destination="ODy-2D-hGZ" id="Op2-2H-d2p"/>
+                        <outlet property="scoreLabel" destination="PYJ-JS-0gB" id="b6Z-Ye-3sj"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
