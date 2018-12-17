@@ -81,14 +81,15 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
     private func examineSelection(){
         var selectedCardIndexes = selectedCards.map{$0.index}
         selectedCardIndexes.sort()
+        selectedCardIndexes.reverse()
         if game.checkSelectedCardsForSet(by:selectedCardIndexes){
             for cardView in selectedCards{
                 cardViews.remove(at: cardViews.firstIndex(of: cardView)!)
                 cardViewsToCards[game.cardsOnTable[cardView.index]] = nil
                 animateCardViewDissapearance(cardView)
-                game.removeAndDrawCardsOnTable(for: selectedCardIndexes)
         }
             self.setOnTable = nil
+            game.removeCardsFromGameByCardIndexes(selectedCardIndexes)
         }else{
             for cardView in selectedCards{
                 animateCardSelection(for: cardView)

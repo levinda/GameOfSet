@@ -64,8 +64,6 @@ class SetGame {
         }
         
         if (shapes.count != 2)&&(colors.count != 2)&&(numbers.count != 2)&&(fills.count != 2){
-            
-
             score += 3
             areCardsSet = true
             return areCardsSet
@@ -78,22 +76,13 @@ class SetGame {
         }
     }
     
-    func removeAndDrawCardsOnTable(for indexes: [Int]){
+
+    func removeCardsFromGameByCardIndexes(_ indexes:[Int]){
         for cardIndex in indexes{
             cardsOnTable.remove(at: cardIndex)
-            if self.cards.count > 0, self.cardsOnTable.count < 12{
+            if self.cards.count > 0 && self.cardsOnTable.count < 12{
                 cardsOnTable.insert(self.cards.removeLast(), at: cardIndex)
             }
-        }
-        
-    }
-    
-    func removeCardsFromGameByCardIndexes(_ indexes:[Int]){
-        for index in indexes{
-            cardsOnTable.remove(at: index)
-            if cards.count > 0{
-            }
-            cardsOnTable.insert(cards.randomElement()!,at: index)
         }
     }
     
@@ -130,7 +119,7 @@ class SetGame {
             for _ in 1...3{
                 cardsOnTable.append(cards.removeLast())
             }
-        }        
+        }       
     }
     func reshuffleCards(){
         cards = cards + cardsOnTable
